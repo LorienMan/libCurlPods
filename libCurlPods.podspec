@@ -9,7 +9,7 @@ Pod::Spec.new do |spec|
   spec.platform     = :ios, '9.0'
 
   spec.source_files = ['libCurlPods.h', 'libCurlPods.m', 'curl/*.h']
-  spec.public_header_files = 'curl/*.h'
+  spec.public_header_files = ['libCurlPods.h', 'curl/*.h']
   spec.vendored_libraries = 'libcurl.a'
   spec.frameworks = 'Foundation'
 
