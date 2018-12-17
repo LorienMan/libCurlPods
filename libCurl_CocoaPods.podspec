@@ -14,5 +14,4 @@ Pod::Spec.new do |spec|
   spec.frameworks = 'Foundation'
 
   spec.static_framework = true
-  spec.module_name = "Curl"
 end
