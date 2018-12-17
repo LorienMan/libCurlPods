@@ -8,10 +8,12 @@ Pod::Spec.new do |spec|
   spec.source       = { :git => 'https://github.com/LorienMan/libCurl_CocoaPods.git', :tag => '7.60' }
   spec.platform     = :ios, '9.0'
 
-  spec.source_files = ['libCurlPods.h', 'libCurlPods.h', 'curl/*.h']
+  spec.source_files = ['libCurlPods.h', 'libCurlPods.m', 'curl/*.h']
   spec.public_header_files = 'curl/*.h'
   spec.vendored_libraries = 'libcurl.a'
   spec.frameworks = 'Foundation'
+
+  spec.module_map = 'libCurlPods.modulemap'
 
   spec.static_framework = true
 end
