@@ -1,0 +1,6 @@
+framework module libCurlPods {
+  umbrella header "libCurlPods.h"
+
+  export *
+  module * { export * }
+}
