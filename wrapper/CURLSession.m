@@ -34,7 +34,19 @@
 }
 
 - (CURLDataTask *)dataTaskWithRequest:(NSURLRequest *)request completionHandler:(void (^)(NSData *data, CURLResponse *response, NSError *error))completionHandler {
-    return [[CURLDataTask alloc] initWithURLRequest:request completionHandler:completionHandler operationQueue:self.taskOperationQueue];
+    CURLDataTask *task = [[CURLDataTask alloc] initWithURLRequest:request completionHandler:completionHandler operationQueue:self.taskOperationQueue];
+
+    NSString *host = request.URL.host;
+    if (self.overrideHostIPs != nil && host != nil) {
+        NSInteger port = request.URL.port.integerValue ?: ( [request.URL.scheme isEqualToString:@"https"] ? 443 : 80 );
+        NSString *ip = self.overrideHostIPs[host];
+
+        if (ip != nil) {
+            [task overrideHostWithIp:ip port:port];
+        }
+    }
+
+    return task;
 }
 
 @end

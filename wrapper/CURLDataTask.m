@@ -16,6 +16,8 @@ static NSString *kAcceptEncodingHeaderName = @"Accept-Encoding";
 @interface CURLDataTask ()
 @property (nonatomic, weak) NSOperationQueue *operationQueue;
 @property (nonatomic, strong) NSURLRequest *request;
+@property (nonatomic, strong) NSString *ipToOverrideWith;
+@property (nonatomic, assign) NSInteger portToOverrideWith;
 @property (nonatomic, copy) void (^completionHandler)(NSData *data, CURLResponse *response, NSError *error);
 @property (nonatomic, assign) BOOL didStart;
 @property (nonatomic, assign) BOOL isCancelled;
@@ -34,6 +36,11 @@ static NSString *kAcceptEncodingHeaderName = @"Accept-Encoding";
     }
 
     return self;
+}
+
+- (void)overrideHostWithIp:(NSString *)ip port:(NSInteger)port {
+    self.ipToOverrideWith = ip;
+    self.portToOverrideWith = port;
 }
 
 - (void)start {
@@ -78,6 +85,14 @@ static NSString *kAcceptEncodingHeaderName = @"Accept-Encoding";
     const char *url = [(self.request.URL.absoluteString ?: @"") UTF8String];
     curl_easy_setopt(handle, CURLOPT_URL, url);
 
+    struct curl_slist *host = NULL;
+    if (self.ipToOverrideWith) {
+        NSString *hostString = [NSString stringWithFormat:@"%@:%ld:%@", self.request.URL.host, self.portToOverrideWith, self.ipToOverrideWith];
+
+        host = curl_slist_append(NULL, [hostString UTF8String]);
+        curl_easy_setopt(handle, CURLOPT_RESOLVE, host);
+    }
+
     // Setup - headers
     __block struct curl_slist *headers = NULL;
     [self.request.allHTTPHeaderFields enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *value, BOOL *stop) {
@@ -120,7 +135,8 @@ static NSString *kAcceptEncodingHeaderName = @"Accept-Encoding";
     long statusCode;
     curl_easy_getinfo(handle, CURLINFO_RESPONSE_CODE, &statusCode);
 
-    // Cleanup the headers & handle
+    // Cleanup
+    curl_slist_free_all(host);
     curl_slist_free_all(headers);
     curl_easy_cleanup(handle);
 
