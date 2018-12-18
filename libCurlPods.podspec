@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'libCurlPods'
-  spec.version      = '7.60'
+  spec.version      = '7.60_1'
   spec.license      = { :type => 'MIT' }
   spec.homepage     = 'https://github.com/LorienMan/libCurl_CocoaPods'
   spec.authors      = { 'LorienMan' => 'https://github.com/LorienMan' }
@@ -22,6 +22,7 @@ Pod::Spec.new do |spec|
     'wrapper/NSError+CURL.h'
   ]
   spec.vendored_libraries = 'libcurl.a'
+  spec.libraries = 'curl'
   spec.frameworks = 'Foundation'
 
   spec.module_map = 'libCurlPods.modulemap'
